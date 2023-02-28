@@ -1,8 +1,10 @@
 <script>
 import iconLoader from '../components/icons/IconLoader.vue'
+import CreateProduct from '../components/core/CreateProduct.vue'
 export default {
   components: {
-    loader: iconLoader
+    loader: iconLoader,
+    createProduct: CreateProduct
   },
   data() {
     return {
@@ -12,13 +14,27 @@ export default {
     }
   },
   methods: {
+    loadProductsHandler() {
+      this.getStore()
+    },
     async getStore() {
       this.loading = true
-      const res = await fetch('http://inventory-sandbox.test/api/stores')
+      const res = await fetch('http://127.0.0.1:8000/api/stores')
       const store = await res.json()
       this.store = store.data[0]
       console.debug(this.store)
       this.loading = false
+    },
+    async removeProduct(id) {
+      const options = { method: 'DELETE' }
+
+      fetch(`http://127.0.0.1:8000/api/products/remove/${id}`, options)
+        .then((response) => response.json())
+        .then((response) => {
+          this.getStore()
+          console.log(response)
+        })
+        .catch((err) => console.error(err))
     }
   },
   mounted() {
@@ -31,7 +47,7 @@ export default {
 <template>
   <main v-if="!loading">
     <div class="toolbar">
-      <button class="btn" title="Crear Nuevo producto">Nuevo</button>
+      <createProduct @loadProducts="loadProductsHandler()" :storeData="store" />
     </div>
     <div class="page-wrapper">
       <div class="header">
@@ -44,7 +60,7 @@ export default {
               <h2 class="product__name">
                 {{ product.name }}
                 <button class="btn">editar</button>
-                <button class="btn">eliminar</button>
+                <button class="btn" @click="removeProduct(product.id)">eliminar</button>
               </h2>
               <p class="product__description">{{ product.description }}</p>
             </div>
