@@ -2,7 +2,7 @@
   <div class="modal-wrapper" v-if="show">
     <div class="modal">
       <div class="modal__head" v-if="storeData">
-        <h2>Crear Producto {{ storeData.id }}</h2>
+        <h2>Crear Producto</h2>
       </div>
       <div class="modal__body">
         <form action="">
