@@ -1,10 +1,12 @@
 <script>
 import iconLoader from '../components/icons/IconLoader.vue'
 import CreateProduct from '../components/core/CreateProduct.vue'
+import EditProduct from '../components/core/EditProduct.vue'
 export default {
   components: {
     loader: iconLoader,
-    createProduct: CreateProduct
+    createProduct: CreateProduct,
+    editProduct: EditProduct
   },
   data() {
     return {
@@ -59,7 +61,7 @@ export default {
             <div class="">
               <h2 class="product__name">
                 {{ product.name }}
-                <button class="btn">editar</button>
+                <editProduct @loadProducts="loadProductsHandler()" :productData="product" />
                 <button class="btn" @click="removeProduct(product.id)">eliminar</button>
               </h2>
               <p class="product__description">{{ product.description }}</p>
@@ -75,7 +77,7 @@ export default {
   <loader v-else />
 </template>
 
-<style lang="scss">
+<style lang="scss" >
 .page-wrapper {
   min-height: 500px;
   max-width: 750px;
