@@ -7,7 +7,7 @@ export default {
   data() {
     return {
       loading: false,
-      stores: [],
+      store: null,
       products: []
     }
   },
@@ -15,39 +15,31 @@ export default {
     async getStore() {
       this.loading = true
       const res = await fetch('http://inventory-sandbox.test/api/stores')
-      const stores = await res.json()
-      this.stores = stores.data
-      this.loading = false
-    },
-    async getProducts() {
-      this.loading = true
-      const res = await fetch('http://inventory-sandbox.test/api/products')
-      const products = await res.json()
-      this.products = products.data
+      const store = await res.json()
+      this.store = store.data[0]
+      console.debug(this.store)
       this.loading = false
     }
   },
   mounted() {
     this.getStore()
-    this.getProducts()
   }
 }
 </script>
 
 
 <template>
-  <main>
+  <main v-if="!loading">
     <div class="toolbar">
       <button class="btn" title="Crear Nuevo producto">Nuevo</button>
     </div>
     <div class="page-wrapper">
       <div class="header">
         <h1 class="store-name">Deeply<span>Store</span></h1>
-        <loader />
       </div>
       <div class="content">
-        <ul class="product-list">
-          <li v-for="product in products" :key="product.id" class="product">
+        <ul class="product-list" v-if="store">
+          <li v-for="product in store.products" :key="product.id" class="product">
             <div class="">
               <h2 class="product__name">
                 {{ product.name }}
@@ -64,6 +56,7 @@ export default {
       </div>
     </div>
   </main>
+  <loader v-else />
 </template>
 
 <style lang="scss">
